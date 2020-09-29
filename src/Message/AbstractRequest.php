@@ -47,8 +47,19 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         );
     }
 
+    /**
+     * Check whether the signature is valid.
+     *
+     * @return bool True if the signature is valid; false otherwise.
+     */
+    public function isValid()
+    {
+        return $this->getSignature() === $this->buildSignature();
+    }
+
     protected function createSignatureFromString($fullStringToHash)
     {
         return  hash('sha256', $fullStringToHash);
     }
+
 }

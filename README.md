@@ -6,8 +6,7 @@
 <!--[![Latest Stable Version](https://poser.pugx.org/omnipay/iPay88/version.png)](https://packagist.org/packages/omnipay/iPay88)-->
 <!--[![Total Downloads](https://poser.pugx.org/omnipay/iPay88/d/total.png)](https://packagist.org/packages/omnipay/iPay88)-->
 
-[Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements iPay88 support for Omnipay.
+[Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment processing library for PHP. This package implements common classes required by Omnipay.
 
 ## Installation
 

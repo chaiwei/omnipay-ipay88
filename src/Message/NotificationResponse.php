@@ -6,7 +6,7 @@ namespace Omnipay\IPay88\Message;
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RequestInterface;
 
-class CompletePurchaseResponse extends AbstractResponse
+class NotificationResponse extends AbstractResponse
 {
     private $reQueryResponse = [
         '00' => 'Successful payment',
@@ -40,16 +40,8 @@ class CompletePurchaseResponse extends AbstractResponse
             $this->status = false;
             return;
         }
-
-        $this->message =
-            isset($this->reQueryResponse[$this->data['ReQueryStatus']]) ? $this->reQueryResponse[$this->data['ReQueryStatus']] : '';
-
-        if ('00' == $this->data['ReQueryStatus']) {
-            $this->status = true;
-            return;
-        }
-        
-        if ('Limited by per day maximum number of requery' == $this->data['ReQueryStatus'] && $this->data['Status'] == 1 ) {
+ 
+        if ($this->data['Status'] == 1 ) {
             $this->status = true;
             return;
         }

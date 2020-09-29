@@ -7,8 +7,7 @@ use Omnipay\Common\AbstractGateway;
  * iPay8 Gateway Driver for Omnipay
  *
  * This driver is based on
- * Online Payment Switching Gateway Technical Specification Version 1.6.1
- * @link https://drive.google.com/file/d/0B4YUBYSgSzmAbGpjUXMyMWx6S2s/view?usp=sharing
+ * Online Payment Switching Gateway Technical Specification Version 1.6.4
  */
 class Gateway extends AbstractGateway
 {
@@ -22,7 +21,7 @@ class Gateway extends AbstractGateway
         return [
             'merchantKey' => '',
             'merchantCode' => '',
-            'backendUrl' => '',
+            'backendUrl' => '', // notifyUrl
             'returnUrl' => '',
         ];
     }
@@ -77,4 +76,8 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Omnipay\IPay88\Message\CompletePurchaseRequest', $parameters);
     }
 
+    public function acceptNotification(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\IPay88\Message\NotificationRequest', $parameters);
+    }
 }
