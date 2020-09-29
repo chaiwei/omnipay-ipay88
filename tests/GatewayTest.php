@@ -12,7 +12,7 @@ class GatewayTest extends GatewayTestCase
     /** @var array */
     private $options;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
