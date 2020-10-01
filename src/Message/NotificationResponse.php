@@ -8,9 +8,6 @@ use Omnipay\Common\Message\NotificationInterface;
 
 class NotificationResponse extends CompletePurchaseResponse implements NotificationInterface
 {
-    const STATUS_COMPLETED = 'success';
-    const STATUS_PENDING = 'pending';
-    const STATUS_FAILED = 'failed';
 
     protected $acknowledgementMsg = 'RECEIVEOK';
 
@@ -27,7 +24,11 @@ class NotificationResponse extends CompletePurchaseResponse implements Notificat
      */
     public function getTransactionStatus()
     {
-        return $this->isSuccessful();
+        if ($this->isSuccessful()){
+            return self::STATUS_COMPLETED;
+        } else {
+            return self::STATUS_FAILED;
+        }
     }
 
     /**
