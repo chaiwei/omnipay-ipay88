@@ -8,7 +8,7 @@ use Omnipay\Common\Message\RequestInterface;
 
 class CompletePurchaseResponse extends AbstractResponse
 {
-    private $reQueryResponse = [
+    protected $reQueryResponse = [
         '00' => 'Successful payment',
         'Invalid parameters' => 'Parameters pass in incorrect',
         'Record not found' => 'Cannot found the record',
@@ -17,7 +17,7 @@ class CompletePurchaseResponse extends AbstractResponse
         'M88Admin' => 'Payment status updated by iPay88 Admin(Fail)'
     ];
 
-    private $invalidSignatureMsg = 'Invalid signature returned from iPay88';
+    protected $invalidSignatureMsg = 'Invalid signature returned from iPay88';
 
     protected $message;
 

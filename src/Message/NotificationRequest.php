@@ -21,6 +21,7 @@
   https://academe.co.uk/2015/06/omnipayauthorize-net-dpm-sequence-chart/
 
   https://github.com/thephpleague/omnipay-sagepay/blob/master/src/Message/ServerNotifyRequest.php
+  https://github.com/thephpleague/omnipay-sagepay/blob/master/src/Traits/ServerNotifyTrait.php
 
 $merchantcode = $_REQUEST["MerchantCode"];
 $paymentid = $_REQUEST["PaymentId"];
@@ -47,6 +48,33 @@ ELSE {
     // update order to FAIL
 }
 
+$gateway = Omnipay::create('AuthorizeNetApi_Api');
+
+$gateway->setAuthName($authName);
+$gateway->setTransactionKey($authKey);
+$gateway->setSignatureKey($signatureKey); // HMAC-256
+$gateway->setTestMode(true); // for false
+
+$notification = $gateway->acceptNotification();
+
+
+$gateway = Omnipay::create('IPay88');
+$gateway->initialize(config('omnipay.gateways.IPay88'));
+
+$params = [
+    'card' => [
+        'firstName' => $order->name,
+        'email' => $order->email ?: 'noemail@whatawaste.my',
+        'phone' => $order->phone,
+    ],
+    'amount' => 1.00, // temporary hardcode
+    'currency' => 'MYR',
+    'description' => Str::limit($product_desc->implode(','), 90),
+    'transactionId' => $order->order_number,
+    'returnUrl' => url('api/customer/checkout/processing/'.$payment_method.'/'.$order_id.'/'.$token),
+];
+$request = $gateway->acceptNotification($params) // return NotificationRequest Class object
+$response = $request->send(); // getData() then sendData()
 */
 
 namespace Omnipay\IPay88\Message;
@@ -54,11 +82,8 @@ namespace Omnipay\IPay88\Message;
 use Omnipay\Common\Currency;
 use Omnipay\Common\Message\NotificationInterface;
 
-class NotificationRequest extends AbstractRequest implements NotificationInterface
+class NotificationRequest extends AbstractRequest 
 {
-    const RESPONSE_STATUS_OK        = 'RECEIVEOK';
-    const RESPONSE_STATUS_ERROR     = 'ERROR';
-    const RESPONSE_STATUS_INVALID   = 'INVALID';
 
     public function getData()
     {
@@ -84,41 +109,12 @@ class NotificationRequest extends AbstractRequest implements NotificationInterfa
         return $this->response = new NotificationResponse($this, $data);
     }
 
-
-    /**
-     * Confirm
-     *
-     * Notify IPay88 you received the payment details and wish to confirm the payment.
-     *
-     * @param string URL to forward the customer to.
-     * @param string Optional human readable reasons for accepting the transaction.
-     */
-    public function confirm($nextUrl, $detail = null)
+    protected function signature($merchantKey, $merchantCode, $paymentId, $refNo, $amount, $currency, $status)
     {
-        // If the signature is invalid, then do not allow the confirm.
-        if (! $this->isValid()) {
-            throw new InvalidResponseException('Cannot confirm an invalid notification');
-        }
+        $amount = str_replace([',', '.'], '', $amount);
 
-        $this->sendResponse(static::RESPONSE_STATUS_OK, $nextUrl, $detail);
-    }
+        $paramsInArray = [$merchantKey, $merchantCode, $paymentId, $refNo, $amount, $currency, $status];
 
-
-    /**
-     * Respond to IPay88 confirming or rejecting the notification.
-     *
-     * @param string The status to send to IPay88, one of static::RESPONSE_STATUS_*
-     * @param string URL to forward the customer to.
-     * @param string Optional human readable reason for this response.
-     */
-    public function sendResponse($status, $nextUrl, $detail = null)
-    {
-        $message = $this->getResponseBody($status, $nextUrl, $detail);
-
-        echo $message;
-
-        if ((bool)$this->getExitOnResponse()) {
-            exit;
-        }
+        return $this->createSignatureFromString(implode('', $paramsInArray));
     }
 }
