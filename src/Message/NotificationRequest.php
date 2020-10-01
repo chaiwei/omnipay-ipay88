@@ -80,7 +80,6 @@ $response = $request->send(); // getData() then sendData()
 namespace Omnipay\IPay88\Message;
 
 use Omnipay\Common\Currency;
-use Omnipay\Common\Message\NotificationInterface;
 
 class NotificationRequest extends AbstractRequest 
 {

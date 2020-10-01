@@ -4,6 +4,7 @@ namespace Omnipay\IPay88\Message;
 
 use Omnipay\Common\Message\RequestInterface;
 use Omnipay\IPay88\Message\CompletePurchaseResponse;
+use Omnipay\Common\Message\NotificationInterface;
 
 class NotificationResponse extends CompletePurchaseResponse implements NotificationInterface
 {
